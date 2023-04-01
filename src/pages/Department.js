@@ -5,22 +5,42 @@ import { Link, useParams } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { IMGPATH, SERVER } from "../constant/api";
-import '../App';
+import "../App";
+import DropdownSubject from "../components/DropdownSubject";
+import DropdownYear from "../components/DropdownYear";
 
 const DepartmentPage = () => {
+  const [monhocchon, setMonhocchon] = useState("Tất cả");
+
+  const setMonhoc = (monhoc) => {
+    setMonhocchon(monhoc);
+  };
+  const [namchon, setNamchon] = useState("Tất cả");
+
+  const setNam = (nam) => {
+    setNamchon(nam);
+  };
   const { khoa_id, loaitailieu_ten } = useParams();
   const [documents, setDocuments] = useState([]);
   const [tops, setTops] = useState([]);
   const [department, setDepartment] = useState({});
   const [departments, setDepartments] = useState([]);
+  const [monhocs, setMonhocs] = useState([]);
 
   const [documentsPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
 
   const pagesVisited = pageNumber * documentsPerPage;
   const pageCount = Math.ceil(documents.length / documentsPerPage);
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const changePage = ({ selected }) => {
     setPageNumber(selected);
+    scrollToTop();
   };
   const updateTraffic = async (tailieu_id) => {
     const res = await axios.put(
@@ -29,15 +49,15 @@ const DepartmentPage = () => {
   };
   const DocumentItem = (props) => {
     return (
-      <div className="py-1 w-full pr-20 ml-2 cursor-pointer ">
+      <div className="w-full pr-20 py-1 cursor-pointer ">
         <Link
-        onClick={()=>updateTraffic(props.tailieu.tailieu_id)}
+          onClick={() => updateTraffic(props.tailieu.tailieu_id)}
           className="hover:text-[#3f85f5] text-[24px] font-semibold"
           to={`/documentdetail/${props.tailieu.tailieu_id}`}
         >
-                    <div class="block w-full overflow-hidden truncate-2-lines">
-        {props.tailieu.tailieu_ten}
-      </div>
+          <div class="block w-full overflow-hidden truncate-2-lines">
+            {props.tailieu.tailieu_ten}
+          </div>
         </Link>
         <div className="flex space-x-2 my-2">
           <span className="text-sm">{props.tailieu_ngaydang}</span>
@@ -51,10 +71,9 @@ const DepartmentPage = () => {
             {props.tailieu.tailieu_taixuong} lượt download
           </span>
           <span className="text-sm">
-          {props.tailieu.so_luot_thich} lượt thích
+            {props.tailieu.so_luot_thich} lượt thích
           </span>
         </div>
-        <div>{props.tailieu.tailieu_mota}</div>
       </div>
     );
   };
@@ -76,6 +95,7 @@ const DepartmentPage = () => {
       const datetime = new Date(tailieu.tailieu_ngaydang);
 
       const tailieu_ngaydang = datetime.toLocaleDateString();
+
       return (
         <DocumentItem
           key={index}
@@ -88,6 +108,10 @@ const DepartmentPage = () => {
     return (
       <div>
         <Link
+          onClick={() => {
+            setMonhocchon("Tất cả");
+            setNamchon("Tất cả");
+          }}
           className="space-y-1 hover:text-[#3f85f5] text-xl"
           to={"/department/" + khoa.khoa_id + "/" + loaitailieu_ten}
         >
@@ -96,25 +120,63 @@ const DepartmentPage = () => {
       </div>
     );
   });
+  const [currenLoaiTaiLieu, setCurrenLoaiTaiLieu] = useState("");
   useEffect(() => {
+    setCurrenLoaiTaiLieu(loaitailieu_ten);
     localStorage.setItem(
       "index",
       loaitailieu_ten === "Tất cả" ? "Các khoa" : loaitailieu_ten
     );
+    if (loaitailieu_ten !== currenLoaiTaiLieu) {
+      setNamchon("Tất cả");
+      setMonhoc("Tất cả");
+    }
     const fetchDocuments = async () => {
       const res = await axios.get("http://localhost:3002/tailieu");
       let temp = [];
       res.data.forEach((element) => {
         if (loaitailieu_ten === "Tất cả" || loaitailieu_ten === "Các khoa") {
           if (element.khoa_id.toString() === khoa_id.toString()) {
-            temp.push(element);
+            if (monhocchon === "Tất cả") {
+              if (element.tailieu_ten.includes(namchon)) {
+                temp.push(element);
+              }
+              if (namchon === "Tất cả") {
+                temp.push(element);
+              }
+            } else {
+              if (monhocchon === element.monhoc_ten) {
+                if (element.tailieu_ten.includes(namchon)) {
+                  temp.push(element);
+                }
+                if (namchon === "Tất cả") {
+                  temp.push(element);
+                }
+              }
+            }
           }
         } else {
           if (
             element.loaitailieu_ten === loaitailieu_ten &&
             element.khoa_id.toString() === khoa_id.toString()
           ) {
-            temp.push(element);
+            if (monhocchon === "Tất cả") {
+              if (element.tailieu_ten.includes(namchon)) {
+                temp.push(element);
+              }
+              if (namchon === "Tất cả") {
+                temp.push(element);
+              }
+            } else {
+              if (monhocchon === element.monhoc_ten) {
+                if (element.tailieu_ten.includes(namchon)) {
+                  temp.push(element);
+                }
+                if (namchon === "Tất cả") {
+                  temp.push(element);
+                }
+              }
+            }
           }
         }
       });
@@ -152,32 +214,63 @@ const DepartmentPage = () => {
         `http://localhost:3002/truycapkhoa/${khoa_id}`
       );
     };
+    const fetchSubject = async () => {
+      const res = await axios.get("http://localhost:3002/monhoc");
+      let temp = [];
+      res.data.forEach((element) => {
+        if (element.khoa_id.toString() === khoa_id.toString()) {
+          temp.push(element);
+        }
+      });
+      setMonhocs(temp);
+    };
+    fetchSubject();
     updateTraffic();
-  }, [khoa_id, loaitailieu_ten]);
+  }, [khoa_id, loaitailieu_ten, monhocchon, namchon]);
 
   return (
-    <div className="p-5 flex">
-      <div className="border w-1/5 bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
+    <div className="py-5 px-28 flex space-x-24">
+      <div className="w-[170px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
         <div className="w-full text-center font-bold ">Các khoa</div>
         {leftSidebar}
       </div>
-      <div className="ml-2">
+      <div className="w-4/5">
         <div className="text-black">
-          <div className="px-2 shadow-md bg-[#3f85f5] w-[900px] text-white text-xl text-center flex justify-start">
-            <div className="flex justify-start items-center">
-              <img
-                className="w-12 h-12 object-cover my-1"
-                src={SERVER + IMGPATH + department.khoa_logo}
-                alt="avatar"
-              />
-              <span className="ml-1 font-bold">
-                {department.khoa_ten}
-              </span>
+          <div className="px-2 shadow-md bg-[#3f85f5] w-full text-white text-xl text-center flex justify-start">
+            <div className="w-full flex justify-between items-center pr-7">
+              <div className="flex justify-center items-center">
+                <img
+                  className="w-12 h-12 object-cover my-1"
+                  src={SERVER + IMGPATH + department.khoa_logo}
+                  alt="avatar"
+                />
+                <span className="ml-1 font-bold">
+                  Tài liệu mới nhất {department.khoa_ten}
+                </span>
+              </div>
+              <div className="flex justify-center items-center space-x-10 ">
+                <DropdownYear title="Năm" setNam={setNam} />
+                <DropdownSubject
+                  setMonhoc={setMonhoc}
+                  title="Môn học"
+                  monhocs={monhocs}
+                  loaitailieu={loaitailieu_ten}
+                />
+                {/* <select className="bg-blue-500 ">
+                  {monhocs.map((monhoc, index) => {
+                    return (
+                      <option value={monhoc.monhoc_id} key={index}>
+                        {monhoc.monhoc_ten}
+                      </option>
+                    );
+                  })}
+                </select> */}
+              </div>
             </div>
           </div>
         </div>
         {documents.length !== 0 ? (
-          <div className="w-[900px] justify-start space-y-5">
+          <div className="w-full justify-start space-y-5">
             {displayDocuments}
           </div>
         ) : (
@@ -204,14 +297,14 @@ const DepartmentPage = () => {
         ) : (
           ""
         )}
-        <div className="px-2 shadow-md bg-[#eaece7] w-[900px] text-white text-xl text-center flex justify-center">
+        <div className="px-2 shadow-md bg-[#eaece7] w-full text-white text-xl text-center flex justify-center">
           <div className="flex justify-center items-center w-full">
             <span className="ml-1 py-4 text-black font-bold">
               Tài liệu tìm kiếm nhiều nhất
             </span>
           </div>
         </div>
-        <div className="w-[900px] space-y-5"> {displayTops}</div>
+        <div className="w-full space-y-5"> {displayTops}</div>
       </div>
     </div>
   );

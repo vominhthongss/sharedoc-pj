@@ -10,6 +10,7 @@ function DocumentDetail(props) {
     localStorage.getItem("nguoidung_tennguoidung") || ""
   );
   const navigate = useNavigate();
+  const [departments, setDepartments] = useState([]);
   const [thichs, setThichs] = useState([]);
   const [numPages, setNumPages] = useState(null);
   const onDocumentLoadSuccess = ({ numPages }) => {
@@ -67,7 +68,7 @@ function DocumentDetail(props) {
       binhluan_noidung: binhluan_noidung,
     };
     setBinhLuanList([temp, ...binhluanList]);
-    setBinhLuanNoiDung('');
+    setBinhLuanNoiDung("");
   };
   const displayComments = binhluanList.map((binhluan, index) => {
     return (
@@ -125,12 +126,33 @@ function DocumentDetail(props) {
       </div>
     );
   });
+  const leftSidebar = departments.map((khoa, index) => {
+    return (
+      <div>
+        <Link
+          className="space-y-1 hover:text-[#3f85f5] text-xl"
+          to={"/department/" + khoa.khoa_id + "/Tất cả"}
+        >
+          {khoa.khoa_ten}
+        </Link>
+      </div>
+    );
+  });
   useEffect(() => {
+    const fetchDepartment = async () => {
+      const res = await axios.get("http://localhost:3002/khoa");
+      setDepartments(res.data);
+    };
+    fetchDepartment();
+
     const fetchTuKhoaList = async () => {
       const res = await axios.get("http://localhost:3002/tukhoa");
       const tukhoas = [];
       res.data.forEach((element) => {
-        if(tukhoas.length<5 && doc.tailieu_ten.toLowerCase().include(tukhoas.toLowerCase())){
+        if (
+          tukhoas.length < 5 &&
+          doc.tailieu_ten.toLowerCase().include(tukhoas.toLowerCase())
+        ) {
           tukhoas.push(element);
         }
       });
@@ -152,13 +174,6 @@ function DocumentDetail(props) {
     };
 
     fetchLike();
-
-    // const updateTraffic = async () => {
-    //   const res = await axios.put(
-    //     `http://localhost:3002/truycaptailieu/${tailieu_id}`
-    //   );
-    // };
-    // updateTraffic();
 
     const fetchDocuments = async () => {
       const res = await axios.get(
@@ -183,7 +198,8 @@ function DocumentDetail(props) {
         if (
           element.loaitailieu_id.toString() === doc.loaitailieu_id.toString() &&
           element.khoa_id.toString() === doc.khoa_id.toString() &&
-          tempy.length < 5 && element.tailieu_id.toString()!==doc.tailieu_id.toString()
+          tempy.length < 5 &&
+          element.tailieu_id.toString() !== doc.tailieu_id.toString()
         ) {
           tempy.push(element);
         }
@@ -269,7 +285,7 @@ function DocumentDetail(props) {
         {" > "}
         <Link
           onClick={localStorage.setItem("index", "Các khoa")}
-          to={"/department/"+doc.khoa_id+'/' + doc.loaitailieu_ten}
+          to={"/department/" + doc.khoa_id + "/" + doc.loaitailieu_ten}
         >
           {doc.loaitailieu_ten}
         </Link>
@@ -300,17 +316,17 @@ function DocumentDetail(props) {
         )}
       </div>
       <div className="w-full flex flex-col justify-center items-center">
-        <span className="font-bold text-xl px-24 py-2 text-center">{doc.tailieu_ten}</span>
+        <span className="font-bold text-xl px-24 py-2 text-center">
+          {doc.tailieu_ten}
+        </span>
       </div>
       <div className="w-full flex flex-col justify-center items-center py-2">
-        <div className="flex space-x-12">
-          <div className="border bg-[#eaece7] w-64 space-y-10">
-            <div className="bg-[#3f85f5] w-full text-center px-4 py-2  text-xl font-bold text-white">
-              Tài liệu liên quan
-            </div>
-            {relativeDocs}
+        <div className="flex space-x-20">
+          <div className="w-[170px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
+            <div className="w-full text-center font-bold ">Các khoa</div>
+            {leftSidebar}
           </div>
-          <div className="w-fit h-[700px] overflow-y-scroll border px-5 shadow-lg ">
+          <div className="w-[620px] h-[1200px] overflow-y-scroll border px-5 shadow-lg ">
             <Document
               className="my-5 border shadow-md"
               file={SERVER + PDFPATH + doc.tailieu_duongdan}
@@ -327,6 +343,29 @@ function DocumentDetail(props) {
             </div>
             {newDocs}
           </div>
+        </div>
+        <div className="w-full flex justify-center items-center space-x-3">
+          {nguoidung_tennguoidung ? (
+            <button
+              onClick={handleDownload}
+              className="mt-4 w-26 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-[12px]"
+            >
+              Tải tài liệu xuống
+            </button>
+          ) : (
+            <Link
+              onClick={() => {
+                localStorage.setItem(
+                  "currentDocumentId",
+                  doc.tailieu_id.toString()
+                );
+              }}
+              to={"/login"}
+              className="mt-4 w-26 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-[12px]"
+            >
+              Tải tài liệu xuống
+            </Link>
+          )}
         </div>
         <div className="w-[600px] flex justify-start items-center">
           <span>Like tài liệu:</span>
@@ -368,7 +407,6 @@ function DocumentDetail(props) {
             </button>
           )}
         </div>
-
       </div>
 
       <div className="px-28 my-10 ">

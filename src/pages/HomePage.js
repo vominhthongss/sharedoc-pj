@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { IMGPATH, SERVER } from "../constant/api";
-import '../../src/App';
+import "../../src/App";
 const HomePage = () => {
   const [documents, setDocuments] = useState([]);
   const [documentFeedsPerPage] = useState(5);
@@ -13,8 +13,15 @@ const HomePage = () => {
   const [documentFeeds, setDocumentFeeds] = useState([]);
   const pagesFeedVisited = pageNumber * documentFeedsPerPage;
   const pageFeedsCount = Math.ceil(documentFeeds.length / documentFeedsPerPage);
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   const changePage = ({ selected }) => {
     setPageNumber(selected);
+    scrollToTop();
   };
   const navigate = useNavigate();
   const [tukhoas, settukhoas] = useState([]);
@@ -62,7 +69,7 @@ const HomePage = () => {
       return (
         <div key={index} className="flex-col mb-2">
           <div className="w-full flex start">
-            <div className="w-4/5">
+            <div className="w-full px-[155px]">
               <div className="px-2 shadow-md bg-[#3f85f5] text-white text-xl text-center flex justify-between">
                 <div className="flex justify-start items-center">
                   <img
@@ -131,27 +138,23 @@ const HomePage = () => {
             </div>
           </div>
           <div className="w-full ">
-            <div className="w-4/5 grid grid-cols-2 gap-5 my-5 ">
+            <div className="w-full px-[155px] grid grid-cols-2 gap-5 my-5 ">
               {documentFeed.tailieu.map((tailieu, index) => {
                 if (index < 8) {
                   const datetime = new Date(tailieu.tailieu_ngaydang);
 
                   const tailieu_ngaydang = datetime.toLocaleDateString();
                   return (
-                    <div key={index} >
+                    <div key={index} className="flex flex-row">
                       <div className="w-full cursor-pointer">
                         <Link
-                          onClick={()=>updateTraffic(tailieu.tailieu_id)}
+                          onClick={() => updateTraffic(tailieu.tailieu_id)}
                           className="hover:text-[#3f85f5] text-[24px] font-semibold "
                           to={`/documentdetail/${tailieu.tailieu_id}`}
                         >
                           <div class="block w-full overflow-hidden truncate-2-lines">
-                        {tailieu.tailieu_ten}
-                      </div>
-                          
-                          <span className="text-red-500 text-sm ml-2 animate-pulse font-extrabold">
-                            New
-                          </span>
+                            {tailieu.tailieu_ten}
+                          </div>
                         </Link>
                         <div className="flex space-x-2 mt-5">
                           <span className="text-sm">{tailieu_ngaydang}</span>
@@ -169,6 +172,9 @@ const HomePage = () => {
                           </span>
                         </div>
                       </div>
+                      <span className="text-red-500 text-sm ml-2 animate-pulse font-extrabold mt-2">
+                        New
+                      </span>
                     </div>
                   );
                 }
@@ -180,7 +186,7 @@ const HomePage = () => {
               localStorage.setItem("index", "Các khoa");
             }}
             to={"/department/" + documentFeed.khoa.khoa_id + "/Tất cả"}
-            className="font-bold text-blue-700 animate-pulse"
+            className="font-bold text-blue-700 animate-pulse w-full pl-[155px]"
           >
             Xem thêm
           </Link>
@@ -218,12 +224,6 @@ const HomePage = () => {
     fetchDepartment();
     const fetchTuKhoaList = async () => {
       const res = await axios.get("http://localhost:3002/tukhoa");
-      // const tukhoas = [];
-      // res.data.forEach((element) => {
-      //   if(tukhoas.length<5){
-      //     tukhoas.push(element);
-      //   }
-      // });
       settukhoas(res.data);
     };
     fetchTuKhoaList();
@@ -231,7 +231,7 @@ const HomePage = () => {
   return (
     <div className="py-5">
       {documentFeeds.length !== 0 ? (
-        <div className="w-full pl-36">{displayDocumentFeeds}</div>
+        <div className="w-full">{displayDocumentFeeds}</div>
       ) : (
         <div className="w-full flex justify-center items-center h-[500px] text-xl">
           <span>Xin lỗi, hiện chưa có tài liệu này.</span>
