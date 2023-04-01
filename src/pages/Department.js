@@ -249,22 +249,17 @@ const DepartmentPage = () => {
                 </span>
               </div>
               <div className="flex justify-center items-center space-x-10 ">
-                <DropdownYear title="Năm" setNam={setNam} />
+                {loaitailieu_ten === "Đề thi" ? (
+                  <DropdownYear title="Năm" setNam={setNam} />
+                ) : (
+                  ""
+                )}
                 <DropdownSubject
                   setMonhoc={setMonhoc}
                   title="Môn học"
                   monhocs={monhocs}
                   loaitailieu={loaitailieu_ten}
                 />
-                {/* <select className="bg-blue-500 ">
-                  {monhocs.map((monhoc, index) => {
-                    return (
-                      <option value={monhoc.monhoc_id} key={index}>
-                        {monhoc.monhoc_ten}
-                      </option>
-                    );
-                  })}
-                </select> */}
               </div>
             </div>
           </div>
