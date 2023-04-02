@@ -23,6 +23,9 @@ function DocumentDetail(props) {
   const [binhluan_noidung, setBinhLuanNoiDung] = useState();
   const [binhluanList, setBinhLuanList] = useState([]);
   const [tukhoas, settukhoas] = useState([]);
+  const [binhluan_bold, setBinhluan_bold] = useState(false);
+  const [binhluan_italic, setBinhluan_italic] = useState(false);
+  const [binhluan_underline, setBinhluan_underline] = useState(false);
   const keywordList = tukhoas.map((keyword, index) => {
     return (
       <button
@@ -62,10 +65,16 @@ function DocumentDetail(props) {
       binhluan_noidung: binhluan_noidung,
       nguoidung_tennguoidung: localStorage.getItem("nguoidung_tennguoidung"),
       tailieu_id: tailieu_id,
+      binhluan_bold: binhluan_bold ? 1 : 0,
+      binhluan_italic: binhluan_italic ? 1 : 0,
+      binhluan_underline: binhluan_underline ? 1 : 0,
     });
     let temp = {
       nguoidung_anhdaidien: localStorage.getItem("nguoidung_anhdaidien"),
       binhluan_noidung: binhluan_noidung,
+      binhluan_bold: binhluan_bold,
+      binhluan_italic: binhluan_italic,
+      binhluan_underline: binhluan_underline,
     };
     setBinhLuanList([temp, ...binhluanList]);
     setBinhLuanNoiDung("");
@@ -83,7 +92,14 @@ function DocumentDetail(props) {
             {binhluan.nguoidung_hoten}
           </div>
         </div>
-        <div className="bg-white rounded-md p-2 font-thin">
+        <div
+          style={{
+            fontWeight: binhluan.binhluan_bold ? "bold" : null,
+            fontStyle: binhluan.binhluan_italic ? "italic" : null,
+            textDecoration: binhluan.binhluan_underline ? "underline" : null,
+          }}
+          className="bg-white rounded-md p-2 font-thin"
+        >
           {binhluan.binhluan_noidung}
         </div>
       </div>
@@ -274,6 +290,7 @@ function DocumentDetail(props) {
       });
     }
   };
+
   return (
     <div>
       <div className="ml-2 mt-2">
@@ -413,9 +430,46 @@ function DocumentDetail(props) {
       </div>
 
       <div className="px-28 my-10 ">
+        <div className="mb-2 space-x-2">
+          <button
+            onClick={() => {
+              setBinhluan_bold(!binhluan_bold);
+            }}
+            className={`${
+              binhluan_bold ? "bg-blue-700 text-white" : ""
+            } border w-8 rounded-md shadow-md hover:bg-blue-500 hover:text-white`}
+          >
+            B
+          </button>
+          <button
+            onClick={() => {
+              setBinhluan_italic(!binhluan_italic);
+            }}
+            className={`${
+              binhluan_italic ? "bg-blue-700 text-white" : ""
+            } border w-8 rounded-md shadow-md hover:bg-blue-500 hover:text-white italic`}
+          >
+            I
+          </button>
+          <button
+            onClick={() => {
+              setBinhluan_underline(!binhluan_underline);
+            }}
+            className={`${
+              binhluan_underline ? "bg-blue-700 text-white" : ""
+            } border w-8 rounded-md shadow-md hover:bg-blue-500 hover:text-white underline`}
+          >
+            U
+          </button>
+        </div>
         {localStorage.getItem("nguoidung_tennguoidung") ? (
           <form onSubmit={(e) => handleComment(e)} className="flex flex-col">
             <textarea
+              style={{
+                fontWeight: binhluan_bold ? "bold" : null,
+                fontStyle: binhluan_italic ? "italic" : null,
+                textDecoration: binhluan_underline ? "underline" : null,
+              }}
               className="border"
               cols="30"
               rows="5"
