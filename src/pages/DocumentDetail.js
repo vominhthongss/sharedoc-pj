@@ -130,7 +130,7 @@ function DocumentDetail(props) {
     return (
       <div>
         <Link
-          className="space-y-1 hover:text-[#3f85f5] text-xl"
+          className="space-y-1 hover:text-[#3f85f5] text-lg"
           to={"/department/" + khoa.khoa_id + "/Tất cả"}
         >
           {khoa.khoa_ten}
@@ -180,6 +180,7 @@ function DocumentDetail(props) {
         `http://localhost:3002/tailieu/${tailieu_id}`
       );
       setDoc(res.data);
+      console.log("res.data :", res.data);
     };
     fetchDocuments();
 
@@ -191,12 +192,14 @@ function DocumentDetail(props) {
         if (
           element.monhoc_id.toString() === doc.monhoc_id.toString() &&
           element.khoa_id.toString() === doc.khoa_id.toString() &&
+          element.tailieu_trangthai === "đã duyệt" &&
           tempx.length < 5
         ) {
           tempx.push(element);
         }
         if (
           element.loaitailieu_id.toString() === doc.loaitailieu_id.toString() &&
+          element.tailieu_trangthai === "đã duyệt" &&
           element.khoa_id.toString() === doc.khoa_id.toString() &&
           tempy.length < 5 &&
           element.tailieu_id.toString() !== doc.tailieu_id.toString()
@@ -322,7 +325,7 @@ function DocumentDetail(props) {
       </div>
       <div className="w-full flex flex-col justify-center items-center py-2">
         <div className="flex space-x-20">
-          <div className="w-[170px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
+          <div className="w-[250px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
             <div className="w-full text-center font-bold ">Các khoa</div>
             {leftSidebar}
           </div>

@@ -112,7 +112,7 @@ const DepartmentPage = () => {
             setMonhocchon("Tất cả");
             setNamchon("Tất cả");
           }}
-          className="space-y-1 hover:text-[#3f85f5] text-xl"
+          className="space-y-1 hover:text-[#3f85f5] text-lg"
           to={"/department/" + khoa.khoa_id + "/" + loaitailieu_ten}
         >
           {khoa.khoa_ten}
@@ -135,45 +135,47 @@ const DepartmentPage = () => {
       const res = await axios.get("http://localhost:3002/tailieu");
       let temp = [];
       res.data.forEach((element) => {
-        if (loaitailieu_ten === "Tất cả" || loaitailieu_ten === "Các khoa") {
-          if (element.khoa_id.toString() === khoa_id.toString()) {
-            if (monhocchon === "Tất cả") {
-              if (element.tailieu_ten.includes(namchon)) {
-                temp.push(element);
-              }
-              if (namchon === "Tất cả") {
-                temp.push(element);
-              }
-            } else {
-              if (monhocchon === element.monhoc_ten) {
+        if (element.tailieu_trangthai === "đã duyệt") {
+          if (loaitailieu_ten === "Tất cả" || loaitailieu_ten === "Các khoa") {
+            if (element.khoa_id.toString() === khoa_id.toString()) {
+              if (monhocchon === "Tất cả") {
                 if (element.tailieu_ten.includes(namchon)) {
                   temp.push(element);
                 }
                 if (namchon === "Tất cả") {
                   temp.push(element);
+                }
+              } else {
+                if (monhocchon === element.monhoc_ten) {
+                  if (element.tailieu_ten.includes(namchon)) {
+                    temp.push(element);
+                  }
+                  if (namchon === "Tất cả") {
+                    temp.push(element);
+                  }
                 }
               }
             }
-          }
-        } else {
-          if (
-            element.loaitailieu_ten === loaitailieu_ten &&
-            element.khoa_id.toString() === khoa_id.toString()
-          ) {
-            if (monhocchon === "Tất cả") {
-              if (element.tailieu_ten.includes(namchon)) {
-                temp.push(element);
-              }
-              if (namchon === "Tất cả") {
-                temp.push(element);
-              }
-            } else {
-              if (monhocchon === element.monhoc_ten) {
+          } else {
+            if (
+              element.loaitailieu_ten === loaitailieu_ten &&
+              element.khoa_id.toString() === khoa_id.toString()
+            ) {
+              if (monhocchon === "Tất cả") {
                 if (element.tailieu_ten.includes(namchon)) {
                   temp.push(element);
                 }
                 if (namchon === "Tất cả") {
                   temp.push(element);
+                }
+              } else {
+                if (monhocchon === element.monhoc_ten) {
+                  if (element.tailieu_ten.includes(namchon)) {
+                    temp.push(element);
+                  }
+                  if (namchon === "Tất cả") {
+                    temp.push(element);
+                  }
                 }
               }
             }
@@ -189,6 +191,7 @@ const DepartmentPage = () => {
       res.data.forEach((element) => {
         if (
           element.khoa_id.toString() === khoa_id.toString() &&
+          element.tailieu_trangthai === "đã duyệt" &&
           temp.length < 5
         ) {
           temp.push(element);
@@ -229,8 +232,8 @@ const DepartmentPage = () => {
   }, [khoa_id, loaitailieu_ten, monhocchon, namchon]);
 
   return (
-    <div className="py-5 px-28 flex space-x-24">
-      <div className="w-[170px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
+    <div className="py-5 px-20 flex space-x-10">
+      <div className="w-[250px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
         <div className="w-full text-center font-bold ">Các khoa</div>
         {leftSidebar}
       </div>

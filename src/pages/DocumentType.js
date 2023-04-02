@@ -39,7 +39,8 @@ const DocumentTypePage = () => {
       const filteredDocuments = res.data.filter(
         (doc) =>
           doc.monhoc_id.toString() === monhoc_id &&
-          doc.loaitailieu_ten.toString() === loaitailieu_ten
+          doc.loaitailieu_ten.toString() === loaitailieu_ten &&
+          doc.tailieu_trangthai === "đã duyệt"
       );
       setDocuments(filteredDocuments);
     };

@@ -45,16 +45,17 @@ const SearchPage = () => {
       const res = await axios.get("http://localhost:3002/tailieu");
       const filteredDocuments = res.data.filter(
         (doc) =>
-          doc.khoa_ten
+          (doc.khoa_ten
             .toString()
             .toLowerCase()
             .includes(keyword.toLowerCase()) ||
-          doc.monhoc_ten
-            .toString()
-            .toLowerCase()
-            .includes(keyword.toLowerCase()) ||
-          doc.loaitailieu_ten.toLowerCase().includes(keyword.toLowerCase()) ||
-          doc.tailieu_ten.toLowerCase().includes(keyword.toLowerCase())
+            doc.monhoc_ten
+              .toString()
+              .toLowerCase()
+              .includes(keyword.toLowerCase()) ||
+            doc.loaitailieu_ten.toLowerCase().includes(keyword.toLowerCase()) ||
+            doc.tailieu_ten.toLowerCase().includes(keyword.toLowerCase())) &&
+          doc.tailieu_trangthai === "đã duyệt"
       );
       setDocuments(filteredDocuments);
     };

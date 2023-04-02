@@ -199,6 +199,12 @@ const HomePage = () => {
 
     const fetchDocuments = async () => {
       const res = await axios.get("http://localhost:3002/tailieu");
+      let temp = [];
+      res.data.forEach((x) => {
+        if (x.tailieu_trangthai === "đã duyệt") {
+          temp.push(x);
+        }
+      });
       setDocuments(res.data);
     };
     fetchDocuments();

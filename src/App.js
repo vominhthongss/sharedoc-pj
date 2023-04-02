@@ -16,6 +16,7 @@ import SubjectDepartmentPage from "./pages/SubjectDepartmentPage";
 import RegisterPage from "./pages/RegisterPage";
 import ForgetPasswordPage from "./pages/ForgetPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import UploadDocumentPage from "./pages/UploadDocumentPage";
 function App() {
   const [isVisible, setIsVisible] = useState(false);
 
@@ -60,6 +61,7 @@ function App() {
         />
         <Route path="/search/:keyword" element={<SearchPage />} />
         <Route path="/forgetpassword" element={<ForgetPasswordPage />} />
+        <Route path="/uploaddocument" element={<UploadDocumentPage />} />
         <Route
           path="/reset-password/:token/:username"
           element={<ResetPasswordPage />}

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { IMGPATH, SERVER } from "../constant/api";
 function UserMenu(props) {
   const navigate = useNavigate();
+
   const [nguoidung_tennguoidung, setnguoidung_tennguoidung] = useState(
     localStorage.getItem("nguoidung_tennguoidung") || null
   );
@@ -50,6 +51,18 @@ function UserMenu(props) {
                     } block px-4 py-2`}
                   >
                     Thông tin cá nhân
+                  </Link>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <Link
+                    to={`/uploaddocument`}
+                    className={`${
+                      active ? "bg-blue-400 text-white" : "text-gray-900"
+                    } block px-4 py-2`}
+                  >
+                    Upload tài liệu
                   </Link>
                 )}
               </Menu.Item>
