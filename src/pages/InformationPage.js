@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { IMGPATH, SERVER } from "../constant/api";
 import { Navigate } from "react-router-dom";
+import axios from "axios";
 
 function InformationPage() {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ function InformationPage() {
   const toggleShowOldPassword = () => setShowOldPassword(!showOldPassword);
   const toggleShowNewPassword = () => setShowNewPassword(!showNewPassword);
   const toggleShowNewPassword2 = () => setShowNewPassword2(!showNewPassword2);
+  const [khoaOpt, setKhoaOpt] = useState([]);
+  const [nienkhoaOpt, setNienKhoaOpt] = useState([]);
   const { username } = useParams();
   const [nguoidung_matkhau, setnguoidung_matkhau] = useState(
     localStorage.getItem("nguoidung_matkhau") || null
@@ -141,6 +144,21 @@ function InformationPage() {
         setUser(data);
       })
       .catch((error) => console.error(error));
+
+    const fetchKhoa = async () => {
+      const rs = await axios.get("http://localhost:3002/khoa");
+      if (rs.data) {
+        setKhoaOpt(rs.data);
+      }
+    };
+    fetchKhoa();
+    const fetchNienKhoa = async () => {
+      const rs = await axios.get("http://localhost:3002/nienkhoa");
+      if (rs.data) {
+        setNienKhoaOpt(rs.data);
+      }
+    };
+    fetchNienKhoa();
   }, [username]);
 
   return (
@@ -342,6 +360,79 @@ function InformationPage() {
                       })
                     }
                   />
+                </div>
+                <div className="mt-4">
+                  <label
+                    className="block text-gray-700 font-semibold mb-2"
+                    htmlFor="khoa_ten"
+                  >
+                    Khoa
+                  </label>
+                  <select
+                    onChange={(e) =>
+                      setUser({
+                        ...user,
+                        khoa_id: e.target.value,
+                      })
+                    }
+                    value={user.khoa_id}
+                    className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+                    {khoaOpt.map((khoa, index) => {
+                      if (user.khoa_id === khoa.khoa_id) {
+                        return (
+                          <option value={khoa.khoa_id} key={index} selected>
+                            {khoa.khoa_ten}
+                          </option>
+                        );
+                      } else {
+                        return (
+                          <option value={khoa.khoa_id} key={index}>
+                            {khoa.khoa_ten}
+                          </option>
+                        );
+                      }
+                    })}
+                  </select>
+                </div>
+                <div className="mt-4">
+                  <label
+                    className="block text-gray-700 font-semibold mb-2"
+                    htmlFor="nienkhoa_ten"
+                  >
+                    Niên khoá
+                  </label>
+                  <select
+                    onChange={(e) =>
+                      setUser({
+                        ...user,
+                        nienkhoa_id: e.target.value,
+                      })
+                    }
+                    value={user.nienkhoa_id}
+                    className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  >
+
+                    {nienkhoaOpt.map((nienkhoa, index) => {
+                      if (user.nienkhoa_id === nienkhoa.nienkhoa_id) {
+                        return (
+                          <option
+                            value={nienkhoa.nienkhoa_id}
+                            key={index}
+                            selected
+                          >
+                            {nienkhoa.nienkhoa_ten}
+                          </option>
+                        );
+                      } else {
+                        return (
+                          <option value={nienkhoa.nienkhoa_id} key={index}>
+                            {nienkhoa.nienkhoa_ten}
+                          </option>
+                        );
+                      }
+                    })}
+                  </select>
                 </div>
                 <div className="mt-4 hidden">
                   <label

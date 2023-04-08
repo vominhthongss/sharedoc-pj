@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 function RegisterPage() {
   const navigate = useNavigate();
@@ -9,7 +9,11 @@ function RegisterPage() {
   const [nguoidung_gioitinh, setnguoidung_gioitinh] = useState("nam");
   const [nguoidung_mail, setnguoidung_mail] = useState("");
   const [nguoidung_ngaysinh, setnguoidung_ngaysinh] = useState("");
+  const [khoa_id, setkhoa_id] = useState("");
+  const [nienkhoa_id, setnienkhoa_id] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [khoaOpt, setKhoaOpt] = useState([]);
+  const [nienkhoaOpt, setNienKhoaOpt] = useState([]);
   const handleRegister = async (event) => {
     event.preventDefault();
     try {
@@ -21,6 +25,8 @@ function RegisterPage() {
         nguoidung_mail: nguoidung_mail,
         nguoidung_ngaysinh: nguoidung_ngaysinh,
         nguoidung_anhdaidien: "avatar1.png",
+        khoa_id: khoa_id,
+        nienkhoa_id: nienkhoa_id,
       });
       if (response.status === 200) {
         if (response.data.nguoidung_tennguoidung) {
@@ -43,6 +49,23 @@ function RegisterPage() {
       alert("Đăng ký không thành công, do trùng tên đăng nhập !");
     }
   };
+
+  useEffect(() => {
+    const fetchKhoa = async () => {
+      const rs = await axios.get("http://localhost:3002/khoa");
+      if (rs.data) {
+        setKhoaOpt(rs.data);
+      }
+    };
+    fetchKhoa();
+    const fetchNienKhoa = async () => {
+      const rs = await axios.get("http://localhost:3002/nienkhoa");
+      if (rs.data) {
+        setNienKhoaOpt(rs.data);
+      }
+    };
+    fetchNienKhoa();
+  }, []);
   return (
     <div className="left-0 top-0 z-20 w-full h-full fixed">
       <div className="h-screen bg-white flex flex-col justify-center sm:px-6 lg:px-8">
@@ -56,9 +79,9 @@ function RegisterPage() {
             </span>
           </div>
         </Link>
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="bg-gray-200 py-8 px-4 shadow sm:rounded-lg sm:px-10">
-            <form className="space-y-6" onSubmit={handleRegister}>
+            <form className="space-y-2" onSubmit={handleRegister}>
               <div>
                 <label
                   htmlFor="username"
@@ -246,6 +269,54 @@ function RegisterPage() {
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   />
                 </div>
+              </div>
+              <div>
+                <label
+                  className="block text-gray-700 font-semibold mb-2"
+                  htmlFor="khoa_ten"
+                >
+                  Khoa
+                </label>
+                <select
+                  required
+                  onChange={(e) => setkhoa_id(e.target.value)}
+                  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="" disabled selected>
+                    Chọn khoa
+                  </option>
+                  {khoaOpt.map((khoa, index) => {
+                    return (
+                      <option value={khoa.khoa_id} key={index}>
+                        {khoa.khoa_ten}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+              <div>
+                <label
+                  className="block text-gray-700 font-semibold mb-2"
+                  htmlFor="nienkhoa_ten"
+                >
+                  Niên khoá
+                </label>
+                <select
+                  required
+                  onChange={(e) => setnienkhoa_id(e.target.value)}
+                  className="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="" disabled selected>
+                    Chọn niên khoá
+                  </option>
+                  {nienkhoaOpt.map((nienkhoa, index) => {
+                    return (
+                      <option value={nienkhoa.nienkhoa_id} key={index}>
+                        {nienkhoa.nienkhoa_ten}
+                      </option>
+                    );
+                  })}
+                </select>
               </div>
               <div>
                 <button

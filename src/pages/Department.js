@@ -27,6 +27,7 @@ const DepartmentPage = () => {
   const [departments, setDepartments] = useState([]);
   const [monhocs, setMonhocs] = useState([]);
 
+
   const [documentsPerPage] = useState(10);
   const [pageNumber, setPageNumber] = useState(0);
 
@@ -189,12 +190,22 @@ const DepartmentPage = () => {
       const res = await axios.get("http://localhost:3002/tailieu");
       let temp = [];
       res.data.forEach((element) => {
-        if (
-          element.khoa_id.toString() === khoa_id.toString() &&
-          element.tailieu_trangthai === "đã duyệt" &&
-          temp.length < 5
-        ) {
-          temp.push(element);
+        if (loaitailieu_ten === "Các khoa" || loaitailieu_ten === "Tất cả") {
+          if (
+            element.khoa_id.toString() === khoa_id.toString() &&
+            element.tailieu_trangthai === "đã duyệt" &&
+            temp.length < 10
+          ) {
+            temp.push(element);
+          }
+        } else {
+          if (
+            element.khoa_id.toString() === khoa_id.toString() &&
+            element.tailieu_trangthai === "đã duyệt" &&
+            temp.length < 5
+          ) {
+            temp.push(element);
+          }
         }
       });
       setTops(temp);
@@ -248,7 +259,7 @@ const DepartmentPage = () => {
                   alt="avatar"
                 />
                 <span className="ml-1 font-bold">
-                  Tài liệu mới nhất {department.khoa_ten}
+                  {loaitailieu_ten==='Các khoa' || loaitailieu_ten==='Tất cả' ? 'Tài liệu mới nhất': loaitailieu_ten} {department.khoa_ten}
                 </span>
               </div>
               <div className="flex justify-center items-center space-x-10 ">

@@ -172,7 +172,7 @@ const HomePage = () => {
                           </span>
                         </div>
                       </div>
-                      <span className="text-red-500 text-sm ml-2 animate-pulse font-extrabold mt-2">
+                      <span className="text-red-500 text-sm animate-pulse font-extrabold mt-2">
                         New
                       </span>
                     </div>
