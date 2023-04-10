@@ -154,9 +154,9 @@ const HomePage = () => {
                         >
                           <div class="block w-full overflow-hidden truncate-2-lines">
                             {tailieu.tailieu_ten}{" "}
-                            <span className="text-red-500 text-sm animate-pulse font-extrabold">
+                            {/* <span className="text-red-500 text-sm animate-pulse font-extrabold">
                               New
-                            </span>
+                            </span> */}
                           </div>{" "}
                         </Link>
                         <div className="flex space-x-2 mt-5">
@@ -175,9 +175,9 @@ const HomePage = () => {
                           </span>
                         </div>
                       </div>
-                      {/* <span className="text-red-500 text-sm animate-pulse font-extrabold mt-2">
+                      <span className="text-red-500 text-sm animate-pulse font-extrabold mt-2">
                         New
-                      </span> */}
+                      </span>
                     </div>
                   );
                 }

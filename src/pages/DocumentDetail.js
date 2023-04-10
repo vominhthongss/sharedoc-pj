@@ -137,16 +137,18 @@ function DocumentDetail(props) {
 
     const tailieu_ngaydang = datetime.toLocaleDateString();
     return (
-      <div key={index} className="px-1">
-        <Link
-          to={"/documentdetail/" + tailieu.tailieu_id.toString()}
-          className="hover:text-blue-500 text-lg"
-        >
-          {tailieu.tailieu_ten} ({tailieu_ngaydang}){" "}
-          <span className="text-red-500 text-sm animate-pulse font-extrabold mt-2">
-            New
-          </span>
-        </Link>
+      <div key={index} className="flex px-2">
+        <div className="px-1">
+          <Link
+            to={"/documentdetail/" + tailieu.tailieu_id.toString()}
+            className="hover:text-blue-500 text-lg"
+          >
+            {tailieu.tailieu_ten} ({tailieu_ngaydang}){" "}
+          </Link>
+        </div>
+        <span className="text-red-500 text-sm animate-pulse font-extrabold mt-1">
+          New
+        </span>
       </div>
     );
   });
