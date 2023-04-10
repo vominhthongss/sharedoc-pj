@@ -26,6 +26,11 @@ function DocumentDetail(props) {
   const [binhluan_bold, setBinhluan_bold] = useState(false);
   const [binhluan_italic, setBinhluan_italic] = useState(false);
   const [binhluan_underline, setBinhluan_underline] = useState(false);
+
+  const [so_luot_thich, setso_luot_thich] = useState("");
+  const [so_binhluan, setso_binhlluan] = useState("");
+  const [tailieu_truycap, settailieu_truycap] = useState("");
+  const [tailieu_taixuong, settailieu_taixuong] = useState("");
   const keywordList = tukhoas.map((keyword, index) => {
     return (
       <button
@@ -137,7 +142,10 @@ function DocumentDetail(props) {
           to={"/documentdetail/" + tailieu.tailieu_id.toString()}
           className="hover:text-blue-500 text-lg"
         >
-          {tailieu.tailieu_ten} ({tailieu_ngaydang})
+          {tailieu.tailieu_ten} ({tailieu_ngaydang}){" "}
+          <span className="text-red-500 text-sm animate-pulse font-extrabold mt-2">
+            New
+          </span>
         </Link>
       </div>
     );
@@ -155,6 +163,21 @@ function DocumentDetail(props) {
     );
   });
   useEffect(() => {
+    const fetchAddOn = async () => {
+      const res = await axios.get("http://localhost:3002/tailieu");
+
+      res.data.forEach((item) => {
+        if (item.tailieu_id.toString() === tailieu_id.toString()) {
+          console.log('item :', item);
+          setso_luot_thich(item.so_luot_thich);
+          setso_binhlluan(item.so_binhluan);
+          settailieu_truycap(item.tailieu_truycap);
+          settailieu_taixuong(item.tailieu_taixuong);
+        }
+      });
+    };
+    fetchAddOn();
+
     const fetchDepartment = async () => {
       const res = await axios.get("http://localhost:3002/khoa");
       setDepartments(res.data);
@@ -196,7 +219,6 @@ function DocumentDetail(props) {
         `http://localhost:3002/tailieu/${tailieu_id}`
       );
       setDoc(res.data);
-      console.log("res.data :", res.data);
     };
     fetchDocuments();
 
@@ -239,7 +261,7 @@ function DocumentDetail(props) {
       setBinhLuanList(temp);
     };
     fetchComments();
-  }, [doc.khoa_id, doc.loaitailieu_id, doc.monhoc_id, tailieu_id]);
+  }, [doc.khoa_id, doc.loaitailieu_id, doc.monhoc_id, tailieu_id,so_binhluan,so_luot_thich,tailieu_taixuong,tailieu_truycap]);
 
   const handleLike = async () => {
     const res = await axios.post("http://localhost:3002/thich/", {
@@ -340,7 +362,12 @@ function DocumentDetail(props) {
           {doc.tailieu_ten}
         </span>
       </div>
+
       <div className="w-full flex flex-col justify-center items-center py-2">
+        <p className="font-normal flex">
+          Số trang tài liệu:{" "}
+          <p className="mx-2 text-blue-500 font-bold">{numPages}</p>trang
+        </p>
         <div className="flex space-x-20">
           <div className="w-[250px] bg-[#eaece7] h-fit p-2 rounded-md space-y-2">
             <div className="w-full text-center font-bold ">Các khoa</div>
@@ -357,6 +384,7 @@ function DocumentDetail(props) {
               ))}
             </Document>
           </div>
+
           <div className="border bg-[#eaece7] w-64 space-y-10">
             <div className="bg-[#3f85f5] w-full text-center px-4 py-2  text-xl font-bold text-white">
               Tài liệu mới nhất
@@ -364,6 +392,19 @@ function DocumentDetail(props) {
             {newDocs}
           </div>
         </div>
+        <p className="font-normal flex">
+          Số trang tài liệu:{" "}
+          <p className="mx-2 text-blue-500 font-bold">{numPages}</p>trang
+        </p>
+        <div className="flex space-x-2 mt-5">
+          <span className="text-sm text-[#3f85f5]">
+            {so_binhluan} bình luận
+          </span>
+          <span className="text-sm">{tailieu_truycap} lượt xem</span>
+          <span className="text-sm">{tailieu_taixuong} lượt download</span>
+          <span className="text-sm">{so_luot_thich} lượt thích</span>
+        </div>
+
         <div className="w-full flex justify-center items-center space-x-3">
           {nguoidung_tennguoidung ? (
             <button
@@ -387,6 +428,7 @@ function DocumentDetail(props) {
             </Link>
           )}
         </div>
+
         <div className="w-[600px] flex justify-start items-center">
           <span>Like tài liệu:</span>
           {like === false ? (
