@@ -259,7 +259,7 @@ const DepartmentPage = () => {
                   alt="avatar"
                 />
                 <span className="ml-1 font-bold">
-                  {loaitailieu_ten==='Các khoa' || loaitailieu_ten==='Tất cả' ? 'Tài liệu mới nhất': loaitailieu_ten} {department.khoa_ten}
+                  {loaitailieu_ten==='Các khoa' || loaitailieu_ten==='Tất cả' ? 'Tài liệu': loaitailieu_ten} {department.khoa_ten}
                 </span>
               </div>
               <div className="flex justify-center items-center space-x-10 ">
